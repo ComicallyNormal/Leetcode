@@ -1,6 +1,7 @@
 package org.Leetcode;
 
 import java.math.BigDecimal;
+import java.sql.Array;
 import java.util.*;
 
 public class LeetcodeFunctions {
@@ -43,11 +44,89 @@ public class LeetcodeFunctions {
 
     /**
      * Given a strangely formatted list of objects, where each object is kind of like a json object but with a = sign as the key value delimeter and an ; as the attribute delimeter,
-     * we need to reorder the internal object elements alphabetically, and we also need to hierarchically order the list first by name then by value.
+     * we need to reorder the internal object elements alphabetically, and we also need to hierarchically order the list first by value then by name
      * (20 minutes to solve)
      */
     public List<String> hierarchicallyOrderedString(List<String> listOfPersons){
-        return new ArrayList<>();
+        List<String> orderedList = new ArrayList<>();
+
+        ArrayList<String> namesOfAllPersons = new ArrayList<>();
+        Hashtable<String,Hashtable<String,String>> decomposedObjects = new Hashtable<>();
+        Hashtable<String,String> personNamesAndStrings = new Hashtable<>();
+        ArrayList<String> objectsSortedByName = new ArrayList<>();
+        Hashtable<Integer,ArrayList<String>> namesWithValues = new Hashtable();
+        for(String personObject : listOfPersons){
+
+            Hashtable<String,String> decomposedObj = new Hashtable<>();
+            ArrayList<String> attributes = new ArrayList();
+            String[] splitOnColonList = personObject.split(";");
+            for(String kvpStr : splitOnColonList){
+                String[] splitOnEqualsList = kvpStr.split("=");
+                attributes.add(splitOnEqualsList[0]);
+                decomposedObj.put(splitOnEqualsList[0],splitOnEqualsList[1]);
+            }
+            Integer curVal = Integer.valueOf(decomposedObj.get("Worth"));
+            String curName = decomposedObj.get("Name");
+            namesOfAllPersons.add(curName);
+            decomposedObjects.put(curName,decomposedObj); //associate name with object
+            if(namesWithValues.getOrDefault(Integer.valueOf(decomposedObj.get("Worth")),null)==null){
+                ArrayList<String> arr = new ArrayList();
+                arr.add(curName);
+                namesWithValues.put(curVal,arr);
+            }
+            else{
+                namesWithValues.get(curVal).add(curName);
+            }
+
+            String[] castArray = new String[attributes.size()];
+            for(int i = 0; i<attributes.size();i++){
+                castArray[i] = attributes.get(i);
+            }
+            Arrays.sort(castArray);
+
+            String sortedObjectString = "";
+            StringBuilder attrObjBuilder = new StringBuilder();
+            for(String attr : castArray ){
+                String substr = attr + "=" + decomposedObj.get(attr);
+                attrObjBuilder.append(substr).append(";");
+            }
+            sortedObjectString = attrObjBuilder.toString();
+            orderedList.add(sortedObjectString);
+            personNamesAndStrings.put(decomposedObj.get("Name"),sortedObjectString);
+        }
+
+        Integer[] sortedValues = new Integer[namesWithValues.keySet().size()];
+        int tmpCounter = 0;
+        for(Integer i : namesWithValues.keySet()){
+            sortedValues[tmpCounter] = i;
+            tmpCounter++;
+        }
+
+        Arrays.sort(sortedValues); //values are now sorted
+
+        ArrayList<String> finalOrdering = new ArrayList();
+        System.out.println();
+        System.out.println(String.valueOf(sortedValues.length) +" sorted values size");
+
+        for(int j = sortedValues.length-1;j>=0; j--){
+            ArrayList<String> allNamesOfValueJ = namesWithValues.get(sortedValues[j]); //names at j
+            System.out.println("all names at j length "+ String.valueOf(allNamesOfValueJ.size()));
+            String[] orderedNames = new String[allNamesOfValueJ.size()];
+            orderedNames = allNamesOfValueJ.toArray(orderedNames);
+            System.out.println("names of all persons size " +String.valueOf(orderedNames.length) );
+            Arrays.sort(orderedNames); //names at i are now ordered by name
+            for(String lexString : orderedNames){
+                finalOrdering.add(lexString);
+            }
+        }
+
+        System.out.println(String.valueOf(finalOrdering.size()) +" final ordering size");
+
+        for(String personName : finalOrdering){
+            objectsSortedByName.add(personNamesAndStrings.get(personName));
+        }
+
+        return objectsSortedByName;
     }
 
     /**

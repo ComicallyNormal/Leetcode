@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.ArrayList;
 import java.util.Dictionary;
 import java.util.Hashtable;
+import java.util.List;
 
 import static org.junit.jupiter.api.Assertions.*;
 
@@ -97,5 +98,98 @@ class LeetcodeFunctionsTest {
         LeetcodeFunctions leet = new LeetcodeFunctions();
         int sum = leet.discountedSumOfGroceries(prices,discount);
         assertEquals(95,sum);
+    }
+
+
+    //Get Ordered object
+    /**************************************************************************************/
+
+    @Test
+    public void testInternalObjectOrderingWorks(){
+        String testString =  "Name=Lacie;Worth=20;Height=6;";
+        ArrayList<String> testObjects = new ArrayList<>();
+        testObjects.add(testString);
+        LeetcodeFunctions leet = new LeetcodeFunctions();
+        List<String>  orderedStrings = leet.hierarchicallyOrderedString(testObjects);
+        assertEquals("Height=6;Name=Lacie;Worth=20;",orderedStrings.getFirst());
+
+    }
+
+    @Test
+    public void testInternalObjectOrderingWorksMultipleObjects(){
+        String testString =    "Name=Lacie;Worth=20;Height=6;";
+        String testString2 =  "Name=Jeremy;Cat=Terry;Worth=25;Height=55;";
+        String testString3 =  "Name=Jacob;Dog=Spot;Worth=35;";
+
+
+        ArrayList<String> testObjects = new ArrayList<>();
+        testObjects.add(testString);
+        testObjects.add(testString2);
+        testObjects.add(testString3);
+        LeetcodeFunctions leet = new LeetcodeFunctions();
+        String[] hackyStr = new String[testObjects.size()];
+        int hackyCounter = 0;
+
+        List<String>  orderedStrings = leet.hierarchicallyOrderedString(testObjects);
+        for(String x : orderedStrings){
+            hackyStr[hackyCounter] =x;
+            hackyCounter++;
+        }
+
+        assertEquals("Dog=Spot;Name=Jacob;Worth=35;",hackyStr[0]);
+        assertEquals("Cat=Terry;Height=55;Name=Jeremy;Worth=25;",hackyStr[1]);
+        assertEquals("Height=6;Name=Lacie;Worth=20;",hackyStr[2]);
+
+    }
+
+
+    @Test
+    public void testOrderingByNameWorks(){
+        String testString =    "Name=Lacie;Worth=20;Height=6;";
+        String testString2 =  "Name=Jeremy;Cat=Terry;Worth=25;Height=55;";
+        String testString3 =  "Name=Jacob;Dog=Spot;Worth=35;";
+
+
+        ArrayList<String> testObjects = new ArrayList<>();
+        testObjects.add(testString);
+        testObjects.add(testString2);
+        testObjects.add(testString3);
+        LeetcodeFunctions leet = new LeetcodeFunctions();
+        String[] hackyStr = new String[testObjects.size()];
+        int hackyCounter = 0;
+
+        List<String>  orderedStrings = leet.hierarchicallyOrderedString(testObjects);
+        for(String x : orderedStrings){
+            hackyStr[hackyCounter] =x;
+            hackyCounter++;
+        }
+        assertEquals("Dog=Spot;Name=Jacob;Worth=35;",hackyStr[0]);
+        assertEquals("Cat=Terry;Height=55;Name=Jeremy;Worth=25;",hackyStr[1]);
+        assertEquals("Height=6;Name=Lacie;Worth=20;",hackyStr[2]);
+    }
+
+    @Test
+    public void testOrderingByValueThenNameWorks(){
+        String testString =    "Name=Lacie;Worth=100;Height=6;";
+        String testString2 =  "Name=Jeremy;Cat=Terry;Worth=25;Height=55;";
+        String testString3 =  "Name=Jacob;Dog=Spot;Worth=25;";
+
+
+        ArrayList<String> testObjects = new ArrayList<>();
+        testObjects.add(testString);
+        testObjects.add(testString2);
+        testObjects.add(testString3);
+        LeetcodeFunctions leet = new LeetcodeFunctions();
+        String[] hackyStr = new String[testObjects.size()];
+        int hackyCounter = 0;
+
+        List<String>  orderedStrings = leet.hierarchicallyOrderedString(testObjects);
+        for(String x : orderedStrings){
+            hackyStr[hackyCounter] =x;
+            hackyCounter++;
+        }
+        assertEquals("Height=6;Name=Lacie;Worth=100;",hackyStr[0]);
+        assertEquals("Dog=Spot;Name=Jacob;Worth=25;",hackyStr[1]);
+        assertEquals("Cat=Terry;Height=55;Name=Jeremy;Worth=25;",hackyStr[2]);
     }
 }
